@@ -5,7 +5,9 @@ export default function Register() {
   return (
     <div>
         <h2>HomePage / StartPage</h2>
-        <Link to="/register">Register</Link> 
+        <Link to="/register">Register</Link>
+        <br></br>
+        <Link to="/login">Login</Link> 
     </div>
   )
 }

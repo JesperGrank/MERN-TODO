@@ -1,9 +1,11 @@
 import React, {useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 
 export default function Register() {
     const [username, setUsername] = useState("")
     const [password, setPassword] = useState("")
-
+    const navigate = useNavigate()
+    
     
     function fetchData(){
       const payload = {username, password}
@@ -12,6 +14,7 @@ export default function Register() {
         headers: {'Content-Type': 'application/json'},
         body: JSON.stringify(payload)
       })
+      .then( navigate("/login"))
     }
   return (
     <div>
