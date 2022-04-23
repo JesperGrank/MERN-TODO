@@ -1,6 +1,7 @@
 const express = require("express");
 const mongoose = require("mongoose")
 const {User} = require("./models/User")
+const {Todo} = require("./models/Todo")
 const cors = require("cors")
 const bodyParser = require("body-parser")
 const jwt = require("jsonwebtoken")
@@ -14,18 +15,25 @@ app.use(bodyParser.urlencoded({extended: true}))
 app.use(express.json())
 // const JWT_SECRET = "781237812378123jkdsakjn12"
 
-// app.use((req, _res, next) => {
-//   const authHeader = req.header("Authorization")
-//   if (authHeader) {
-//     const token = authHeader.split(" ")[1]
-//     req.user = jwt.verify(token, JWT_SECRET)
-//   }
-//   next()
+app.use((req, _res, next) => {
+  const authHeader = req.header("Authorization")
+  if (authHeader) {
+    const token = authHeader.split(" ")[1]
+    req.user = jwt.verify(token, process.env.JWT_SECRET)
+  }
+  next()
+})
+
+// app.get("/", (req, res) => {
+//   res.json({message: "Hello worlld"})
 // })
 
-app.get("/", (req, res) => {
-  res.json({message: "Hello worlld"})
-})
+// app.post("/", (req, res) => {
+
+//   if (req.user){
+//     res.json({})
+//   }
+// })
 
 app.post("/register", async (req, res) => {
   const {username, password} = req.body
@@ -69,9 +77,35 @@ app.post("/login", async (req, res) => {
         console.log(token)
         res.json({ token });
     } else {
-        res.json(401);
+      res.json({message: "Wrong username or password."});
     }
 })
+
+app.post("/", async (req, res) => {
+  const {text} = req.body
+  console.log(req.user)
+  try{
+    const todo = new Todo({ author: req.user.userId, text })
+    await todo.save()
+    res.json({todo})
+  } catch(err){
+    // console.log(err)
+    res.json({err})
+  }
+  
+})
+
+app.get("/todos", async (req, res) => {
+  // const todos = await Todo.find({}).populate("author").sort({createdAt: -1})
+  try{
+    const todos = await Todo.find({author: mongoose.Types.ObjectId(req.user.userId)}).sort({createdAt: -1})
+    res.json({todos})
+  } catch(err){
+    res.json({message: "Please login to see todos"})
+  }
+
+})
+
 
 
 mongoose.connect("mongodb://localhost/MERNTODO")
