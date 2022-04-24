@@ -4,6 +4,7 @@ import Register from "./pages/Register";
 import HomePage from "./pages/HomePage";
 import Login from "./pages/Login";
 import Todos from "./pages/Todos"
+import Donetodos from "./pages/Donetodos";
 
 
 function App() {
@@ -15,6 +16,7 @@ function App() {
       <Route path="/register" element={<Register/>}></Route>
       <Route path="/login" element={<Login/>}></Route>
       <Route path="/todos" element={<Todos/>}></Route>
+      <Route path="/completedtodos" element={<Donetodos/>}></Route>
     </Routes>
 
     </div>
