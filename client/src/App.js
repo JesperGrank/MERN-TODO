@@ -3,6 +3,7 @@ import { Route, Routes } from "react-router-dom";
 import Register from "./pages/Register";
 import HomePage from "./pages/HomePage";
 import Login from "./pages/Login";
+import Todos from "./pages/Todos"
 
 
 function App() {
@@ -13,6 +14,7 @@ function App() {
       <Route path="/" element={<HomePage/>}></Route>
       <Route path="/register" element={<Register/>}></Route>
       <Route path="/login" element={<Login/>}></Route>
+      <Route path="/todos" element={<Todos/>}></Route>
     </Routes>
 
     </div>

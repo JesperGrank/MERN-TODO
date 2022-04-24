@@ -81,7 +81,7 @@ app.post("/login", async (req, res) => {
     }
 })
 
-app.post("/", async (req, res) => {
+app.post("/todos/create", async (req, res) => {
   const {text} = req.body
   console.log(req.user)
   try{
@@ -94,17 +94,22 @@ app.post("/", async (req, res) => {
   }
   
 })
-
+// Lista todos
 app.get("/todos", async (req, res) => {
   // const todos = await Todo.find({}).populate("author").sort({createdAt: -1})
   try{
-    const todos = await Todo.find({author: mongoose.Types.ObjectId(req.user.userId)}).sort({createdAt: -1})
+    const todos = await Todo.find({author: mongoose.Types.ObjectId(req.user.userId), complete:false}).sort({createdAt: -1})
     res.json({todos})
   } catch(err){
     res.json({message: "Please login to see todos"})
   }
-
 })
+
+// app.put("/todos/:todoID", (req, res) => {
+//   const todo = await Todo.updateOne({author: mongoose.Types.ObjectId(req.user.userId), {$set: {complete: true} })
+// })
+
+
 
 
 
