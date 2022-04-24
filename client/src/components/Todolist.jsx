@@ -24,10 +24,19 @@ export default function Todolist() {
             })
       }
     
-      function todoDone(){
-        console.log("Knappen tillhör texten: " )
-      }
-  return (
+      function todoDone(e, todo){
+        e.preventDefault()
+        const payload = {complete: todo.complete}
+        console.log(todo.complete)
+        fetch(`http://localhost:3001/todos/${todo._id}`, {
+          method: "PUT",
+          headers: {'Content-Type': 'application/json'},
+          body: JSON.stringify(payload)
+        })
+    
+       }
+  
+    return (
     <div>
         <h2>Todos page</h2>
         {
@@ -36,7 +45,9 @@ export default function Todolist() {
                  <p>text: {todo.text} </p>
                  <p>created at: {todo.createdAt}</p>
                  <p>completed: {todo.complete ? "true" : "false"}</p>
-                 <button onClick={todoDone}>DONE</button>               
+
+                  <button onClick={ e => todoDone(e, todo)}>DONE</button> 
+              
                  <hr></hr> 
                  </div>
           })

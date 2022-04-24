@@ -13,7 +13,6 @@ const PORT = 3001;
 app.use(cors())
 app.use(bodyParser.urlencoded({extended: true}))
 app.use(express.json())
-// const JWT_SECRET = "781237812378123jkdsakjn12"
 
 app.use((req, _res, next) => {
   const authHeader = req.header("Authorization")
@@ -24,17 +23,7 @@ app.use((req, _res, next) => {
   next()
 })
 
-// app.get("/", (req, res) => {
-//   res.json({message: "Hello worlld"})
-// })
-
-// app.post("/", (req, res) => {
-
-//   if (req.user){
-//     res.json({})
-//   }
-// })
-
+// REGISTER
 app.post("/register", async (req, res) => {
   const {username, password} = req.body
   try{
@@ -51,18 +40,8 @@ app.post("/register", async (req, res) => {
   }
 });
 
+// LOGIN 
 app.post("/login", async (req, res) => {
-  // const {username, password} = req.body
-  // const user = await User.login(username, password)
-  // const userId = user._id.toString()
-  // if(user){
-  //   return (token = jwt.sign(
-  //     { user: user.username, password },
-  //     process.env.JWT_SECRET,
-  //     { expiresIn: "1 h", subject: user }
-  //   ));
-  // }
-  // console.log(`Username: ${username} - Password: ${password}`)
 
   const { username, password } = req.body;
     const user = await User.login(username, password);
@@ -80,7 +59,7 @@ app.post("/login", async (req, res) => {
       res.json({message: "Wrong username or password."});
     }
 })
-
+// CREATE TODO
 app.post("/todos/create", async (req, res) => {
   const {text} = req.body
   console.log(req.user)
@@ -94,9 +73,8 @@ app.post("/todos/create", async (req, res) => {
   }
   
 })
-// Lista todos
+// LIST NON COMPLETED TODOS
 app.get("/todos", async (req, res) => {
-  // const todos = await Todo.find({}).populate("author").sort({createdAt: -1})
   try{
     const todos = await Todo.find({author: mongoose.Types.ObjectId(req.user.userId), complete:false}).sort({createdAt: -1})
     res.json({todos})
@@ -105,11 +83,31 @@ app.get("/todos", async (req, res) => {
   }
 })
 
-// app.put("/todos/:todoID", (req, res) => {
-//   const todo = await Todo.updateOne({author: mongoose.Types.ObjectId(req.user.userId), {$set: {complete: true} })
-// })
+// LIST COMPLETED TODOS
+app.get("/completedtodos", async (req, res) => {
+  try{
+    const todos = await Todo.find({author: mongoose.Types.ObjectId(req.user.userId), complete:true}).sort({createdAt: -1})
+    res.json({todos})
+  } catch(err){
+    res.json({message: "Please login to see todos"})
+  }
+})
 
 
+// UPDATE TODO NOT COMPLETED / COMPLETED
+app.put("/todos/:todoID", async (req, res) => {
+  const todoID = req.params.todoID
+  let {complete} = req.body
+  console.log(complete)
+  console.log(req.params.todoID)
+  if(complete === false){
+    complete = true
+  }else{
+    complete = false
+  } 
+  const todo = await Todo.findByIdAndUpdate({_id: todoID}, {complete: complete}, {new: true})
+  res.json({todo})
+})
 
 
 
